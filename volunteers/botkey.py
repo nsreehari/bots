@@ -26,12 +26,12 @@ if not BOTKEY:
         BOTKEY = f.readline().strip()
         f.close()
     except:
-        print "BOTKEY not provided"
+        print ("BOTKEY not provided")
         sys.exit()
 
 LOGFILE = "/tmp/telegram_logs/%s" % os.path.basename(BOTHANDLE)
 try:
-    os.makedirs("/tmp/telegram_logs", 0755)
+    os.makedirs("/tmp/telegram_logs", "0755")
 except:
     pass
 
