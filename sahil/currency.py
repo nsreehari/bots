@@ -1,3 +1,5 @@
+#!/opt/bitnami/python/bin/python
+
 import sys
 import random
 import telepot

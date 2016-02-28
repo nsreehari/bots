@@ -73,11 +73,11 @@ def ssrs(bot, update):
     bot.sendMessage(update.message.chat_id, text=outp)
 
 def newbot(bot, update):
-    kw = map(lambda x: x.strip().lower(), update.message.text.strip().split())
+    kw = map(lambda x: x.strip(), update.message.text.strip().split())
     try:
-            CMD = kw[0][1:]
-            CHANNEL = kw[1]
-            BOTHANDLE = kw[2]
+            CMD = kw[0][1:].lower()
+            CHANNEL = kw[1].lower()
+            BOTHANDLE = kw[2].lower()
             BOTKEY = kw[3]
             GITPATH = kw[4]
             SCRIPT_TO_RUN = kw[5]
@@ -100,6 +100,10 @@ def newbot(bot, update):
         gitlocal = bdir + '/src' 
         outp = check_output(
                 ['/usr/bin/git', 'clone', GITPATH, gitlocal ],
+                 stderr=STDOUT) 
+
+        outp = check_output(
+                ['chmod', '755', gitlocal + "/" + SCRIPT_TO_RUN],
                  stderr=STDOUT) 
 
         for (f, c) in [ ('.botkey', BOTKEY),
