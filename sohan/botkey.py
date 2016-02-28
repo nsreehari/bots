@@ -30,7 +30,10 @@ if not BOTKEY:
         sys.exit()
 
 LOGFILE = "/tmp/telegram_logs/%s" % os.path.basename(BOTHANDLE)
-os.makedirs("/tmp/telegram_logs", 0755)
+try:
+    os.makedirs("/tmp/telegram_logs", 0755)
+except:
+    pass
 
 # Enable logging
 logging.basicConfig(filename=LOGFILE,
