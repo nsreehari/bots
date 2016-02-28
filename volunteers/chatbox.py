@@ -5,8 +5,10 @@ from botkey import BOTKEY, logger, SCRIPTPATH
 
 import sys
 import asyncio
-import telepot
+import telepot, codecs
 from telepot.async.delegate import per_chat_id_in, call, create_open
+
+sys.stdout = codecs.getwriter('utf8')(sys.stdout)
 
 """ Python3.4.3 or newer
 

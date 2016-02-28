@@ -73,7 +73,10 @@ def ssrs(bot, update):
         try:
             outp = check_output([CTLMANAGER, CMD, BOTHANDLE], stderr=STDOUT) 
         except:
-            outp = "Error!"
+            f = open("/tmp/cron.out")
+            outp = f.read()
+            f.close()
+
 
         bot.sendMessage(update.message.chat_id, text=outp)
 
