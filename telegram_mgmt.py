@@ -97,9 +97,13 @@ def newbot(bot, update):
             outp = "Error! Bot already exists"
             bot.sendMessage(update.message.chat_id, text=outp)
             return
+        gitlocal = bdir + '/src' 
+        outp = check_output(
+                ['/usr/bin/git', 'clone', GITPATH, gitlocal ],
+                 stderr=STDOUT) 
 
         for (f, c) in [ ('.botkey', BOTKEY),
-                        ('.runscript', SCRIPT_TO_RUN),
+                        ('.runscript', gitlocal + SCRIPT_TO_RUN),
                         ('.gitpath', GITPATH) ]:
             f = open(bdir + '/' + f, "w+")
             f.write(c)

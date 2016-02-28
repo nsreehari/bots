@@ -20,6 +20,7 @@ if [ ! -d "$BOT_HANDLE_DIR" ]; then
 fi
 
 GEVENT_START="`cat $BOT_HANDLE_DIR/.runscript`"
+GITPATH="`cat $BOT_HANDLE_DIR/.gitpath`"
 
 OPENERP_HOME=`dirname $GEVENT_START`
 GEVENT_PROGRAM=`basename $GEVENT_START`
@@ -109,8 +110,15 @@ stop_gevent() {
 
 if [ "x$1" = "xstart" ]; then
     start_gevent
+elif [ "x$1" = "xup" ]; then
+    start_gevent
+elif [ "x$1" = "xdown" ]; then
+    stop_gevent
 elif [ "x$1" = "xstop" ]; then
     stop_gevent
+elif [ "x$1" = "xrefresh" ]; then
+    cd $BOT_HANDLE_DIR/src
+    /usr/bin/git pull
 elif [ "x$1" = "xrestart" ]; then
     stop_gevent
     sleep 3

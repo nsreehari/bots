@@ -64,3 +64,4 @@ target/
 
 .bots
 .*.swp
+.BOTKEY
