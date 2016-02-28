@@ -70,7 +70,11 @@ def ssrs(bot, update):
     CMD = kw[0][1:]
     BOTHANDLE = kw[1]
     if BOTHANDLE != 'manager':
-        outp = check_output([CTLMANAGER, CMD, BOTHANDLE], stderr=STDOUT) 
+        try:
+            outp = check_output([CTLMANAGER, CMD, BOTHANDLE], stderr=STDOUT) 
+        except:
+            outp = "Error!"
+
         bot.sendMessage(update.message.chat_id, text=outp)
 
 
