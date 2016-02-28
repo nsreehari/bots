@@ -108,6 +108,29 @@ def updatebot(bot, update):
     updatefile(bdir, TYP, VALUE)
 
 
+def rmbot(bot, update):
+    kw = map(lambda x: x.strip(), update.message.text.strip().split())
+    try:
+            CMD = kw[0][1:].lower()
+            channel = kw[1].lower()
+            BOTHANDLE = kw[2].lower()
+    except:
+            outp = "Usage: /rmbot TELEGRAM <bothandle>"
+            bot.sendMessage(update.message.chat_id, text=outp)
+            return
+
+    bdir = BOTSCONFIGDIR + BOTHANDLE
+
+    try:
+        outp = check_output(
+                ['/bin/rm', '-rf', bdir ],
+                 stderr=STDOUT) 
+        outp = "Removed!"
+    except:
+        outp = "Exception!"
+    bot.sendMessage(update.message.chat_id, text=outp)
+
+
 
 
 def newbot(bot, update):
@@ -131,18 +154,25 @@ def newbot(bot, update):
 
     if CHANNEL in ['telegram']:
         bdir = BOTSCONFIGDIR + BOTHANDLE
-        if os.path.isdir(bdir):
+        if CMD == 'newbot' and os.path.isdir(bdir):
             outp = "Error! Bot already exists"
             bot.sendMessage(update.message.chat_id, text=outp)
             return
         gitlocal = bdir + '/src' 
-        outp = check_output(
+
+        try:
+            outp = "Exception!"
+            outp = check_output(
                 ['/usr/bin/git', 'clone', GITPATH, gitlocal ],
                  stderr=STDOUT) 
 
-        outp = check_output(
+            outp = check_output(
                 ['chmod', '755', gitlocal + "/" + SCRIPT_TO_RUN],
                  stderr=STDOUT) 
+        except:
+            bot.sendMessage(update.message.chat_id, text=outp)
+            return
+
 
         for (f, c) in [ ('botkey', BOTKEY),
                         ('runscript', SCRIPT_TO_RUN),
@@ -174,9 +204,12 @@ def main():
     for cmd in ['up', 'down', 'refresh', 'status']:
         dp.addTelegramCommandHandler(cmd, ssrs)
 
+    for cmd in ['newbot', 'forcenewbot'] :
+        dp.addTelegramCommandHandler(cmd, newbot)
+
     for cmd in [1] :
-        dp.addTelegramCommandHandler('newbot', newbot)
         dp.addTelegramCommandHandler('updatebot', updatebot)
+        dp.addTelegramCommandHandler('rmbot', rmbot)
         dp.addTelegramCommandHandler('listbots', listbots)
 
     dp.addTelegramCommandHandler("start", help)
