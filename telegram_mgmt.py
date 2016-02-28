@@ -103,7 +103,7 @@ def newbot(bot, update):
                  stderr=STDOUT) 
 
         for (f, c) in [ ('.botkey', BOTKEY),
-                        ('.runscript', gitlocal + SCRIPT_TO_RUN),
+                        ('.runscript', gitlocal + "/" + SCRIPT_TO_RUN),
                         ('.gitpath', GITPATH) ]:
             f = open(bdir + '/' + f, "w+")
             f.write(c)
