@@ -69,8 +69,9 @@ def ssrs(bot, update):
     CTLMANAGER = SCRIPTPATH + "/ctl_manager.sh"
     CMD = kw[0][1:]
     BOTHANDLE = kw[1]
-    outp = check_output([CTLMANAGER, CMD, BOTHANDLE], stderr=STDOUT) 
-    bot.sendMessage(update.message.chat_id, text=outp)
+    if BOTHANDLE != 'manager':
+        outp = check_output([CTLMANAGER, CMD, BOTHANDLE], stderr=STDOUT) 
+        bot.sendMessage(update.message.chat_id, text=outp)
 
 
 def updatefile(bdir, typ, value):
@@ -81,6 +82,13 @@ def updatefile(bdir, typ, value):
     f = open(bdir + '/' + filemapper[typ], "w+")
     f.write(valuemapper[typ])
     f.close()
+
+def listbots(bot, update):
+    outp = check_output(
+                ['/bin/ls', BOTSCONFIGDIR ],
+                 stderr=STDOUT) 
+    bot.sendMessage(update.message.chat_id, text=outp)
+    return
 
 def updatebot(bot, update):
     kw = map(lambda x: x.strip(), update.message.text.strip().split())
@@ -169,6 +177,7 @@ def main():
     for cmd in [1] :
         dp.addTelegramCommandHandler('newbot', newbot)
         dp.addTelegramCommandHandler('updatebot', updatebot)
+        dp.addTelegramCommandHandler('listbots', listbots)
 
     dp.addTelegramCommandHandler("start", help)
     dp.addTelegramCommandHandler("help", help)
