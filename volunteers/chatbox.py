@@ -121,14 +121,14 @@ class MessageSaver(telepot.async.helper.Monitor):
         content_type, chat_type, chat_id = telepot.glance(msg)
 
         if chat_id in self._exclude:
-            print('Chat id %d is excluded.' % chat_id)
+            logger.info('Chat id %d is excluded.' % chat_id)
             return
 
         if content_type != 'text':
-            print('Content type %s is ignored.' % content_type)
+            logger.info('Content type %s is ignored.' % content_type)
             return
 
-        print('Storing message: %s' % msg)
+        logger.info('Storing message: %s' % msg)
         self._store.put(msg)
 
 
@@ -165,7 +165,7 @@ class ChatBox(telepot.async.DelegatorBot):
     def _send_welcome(self, seed_tuple):
         chat_id = seed_tuple[1]['chat']['id']
 
-        print('Sending welcome ...')
+        logger.info('Sending welcome ...')
         yield from self.sendMessage(chat_id, 'Welcome to HFN system!')
         yield from self.sendMessage(chat_id, 'plese enter your name')
 
@@ -179,7 +179,7 @@ bot = ChatBox(BOTKEY, OWNER_ID)
 loop = asyncio.get_event_loop()
 
 loop.create_task(bot.messageLoop())
-print('Listening ...')
+logger.info('Listening ...')
 
 loop.run_forever()
 
