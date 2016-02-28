@@ -72,6 +72,36 @@ def ssrs(bot, update):
     outp = check_output([CTLMANAGER, CMD, BOTHANDLE], stderr=STDOUT) 
     bot.sendMessage(update.message.chat_id, text=outp)
 
+
+def updatefile(bdir, typ, value):
+    gitlocal = bdir + '/src' 
+    filemapper = {'botkey':'.botkey', 'gitpath':'.gitpath', 'runscript':'.runscript'}
+    valuemapper = {'botkey':value, 'gitpath':value, 'runscript':gitlocal + "/" + value}
+
+    f = open(bdir + '/' + filemapper[typ], "w+")
+    f.write(valuemapper[typ])
+    f.close()
+
+def updatebot(bot, update):
+    kw = map(lambda x: x.strip(), update.message.text.strip().split())
+    try:
+            CMD = kw[0][1:].lower()
+            BOTHANDLE = kw[1].lower()
+            TYP = kw[2].lower()
+            if TYP not in ['botkey', 'gitpath', 'runscript']:
+                raise ValueError
+            VALUE = kw[3]
+    except:
+            outp = "Usage: /updatebot <bothandle> <BOTKEY|GITPATH|RUNSCRIPT> <newvalue>"
+            bot.sendMessage(update.message.chat_id, text=outp)
+            return
+
+    bdir = BOTSCONFIGDIR + BOTHANDLE
+    updatefile(bdir, TYP, VALUE)
+
+
+
+
 def newbot(bot, update):
     kw = map(lambda x: x.strip(), update.message.text.strip().split())
     try:
@@ -106,12 +136,10 @@ def newbot(bot, update):
                 ['chmod', '755', gitlocal + "/" + SCRIPT_TO_RUN],
                  stderr=STDOUT) 
 
-        for (f, c) in [ ('.botkey', BOTKEY),
-                        ('.runscript', gitlocal + "/" + SCRIPT_TO_RUN),
-                        ('.gitpath', GITPATH) ]:
-            f = open(bdir + '/' + f, "w+")
-            f.write(c)
-            f.close()
+        for (f, c) in [ ('botkey', BOTKEY),
+                        ('runscript', SCRIPT_TO_RUN),
+                        ('gitpath', GITPATH) ]:
+            updatefile(bdir, f, c)
 
         outp = "Bot %s registered!" % BOTHANDLE
         bot.sendMessage(update.message.chat_id, text=outp)
@@ -138,8 +166,9 @@ def main():
     for cmd in ['up', 'down', 'refresh', 'status']:
         dp.addTelegramCommandHandler(cmd, ssrs)
 
-    for cmd in ['newbot']:
-        dp.addTelegramCommandHandler(cmd, newbot)
+    for cmd in [1] :
+        dp.addTelegramCommandHandler('newbot', newbot)
+        dp.addTelegramCommandHandler('updatebot', updatebot)
 
     dp.addTelegramCommandHandler("start", help)
     dp.addTelegramCommandHandler("help", help)
